@@ -1,11 +1,13 @@
 import asyncio
+import time
+
 from aiogram import types, F
 from aiogram.filters import Command
 from aiogram.types import Message
 from bot import dp, bot
-from utils import get_info, payment, add_devices, add_user
+from utils import get_info, payment, add_devices, add_user, create_and_send_link
 from logger.config import logger
-
+from setting import qr_code_path
 
 @logger.catch
 @dp.message(Command("start"))
@@ -35,7 +37,15 @@ async def add_device(message: Message):
     logger.info(f"User:{user_id} выбрал "
                 f"Подключение устройства")
     user_name = message.from_user.full_name
-    await message.reply(add_devices(user_id, user_name))
+    add = add_devices(user_id, user_name)
+    await message.reply(add[0])
+    uuid = add[1]["uuid"]
+    print(uuid)
+    create_and_send_link(uuid=uuid ,user_name=user_name)
+    logger.info(f"User_id:{user_id}, QR создан")
+    time.sleep(0.1)
+    await bot.send_photo(message.chat.id, photo=types.FSInputFile(qr_code_path))
+    logger.info(f"User_id:{user_id}, QR выслан")
 
 
 @logger.catch

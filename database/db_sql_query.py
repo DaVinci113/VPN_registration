@@ -23,6 +23,12 @@ FROM users
 WHERE telegram_id=?;
 """
 
+select_users_device = """
+SELECT telegram_id
+FROM users_device
+WHERE telegram_id=?;
+"""
+
 add_device = """
 UPDATE users
 SET connecting_devices=connecting_devices+1

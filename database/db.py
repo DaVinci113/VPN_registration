@@ -1,6 +1,6 @@
 import sqlite3
 from database.db_sql_query import create_table_users, create_table_users_device, add_device, insert_client, \
-    select_client, get_user_data, add_user_device
+    select_client, get_user_data, add_user_device, select_users_device
 
 
 class DataBase:
@@ -51,6 +51,9 @@ class DataBase:
 
     def get_user_data(self, telegram_id: int):
         return self.cursor.execute(get_user_data, (telegram_id,))
+
+    def get_users_device_data(self, telegram_id: int):
+        return self.cursor.execute(select_users_device, (telegram_id,))
 
     def add_device(self, telegram_id: int):
         self.cursor.execute(add_device, (telegram_id,))
