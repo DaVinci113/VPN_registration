@@ -1,8 +1,6 @@
 import sqlite3
 from database.db_sql_query import create_table_users, create_table_users_device, add_device, insert_client, \
     select_client, get_user_data, add_user_device
-from setting import connecting_devices
-
 
 
 class DataBase:
