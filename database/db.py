@@ -50,7 +50,8 @@ class DataBase:
             self.cursor.execute(insert_client, (telegram_id,))
 
     def get_user_data(self, telegram_id: int):
-        return self.cursor.execute(get_user_data, (telegram_id,))
+        user_data = self.cursor.execute(get_user_data, (telegram_id,))
+        return user_data.fetchone()
 
     def get_users_device_data(self, telegram_id: int):
         return self.cursor.execute(select_users_device, (telegram_id,))

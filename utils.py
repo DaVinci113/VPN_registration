@@ -1,5 +1,5 @@
 from database.db import DataBase
-from setting import connecting_devices, info_about_product
+from setting import connecting_devices, info_about_product, get_start_message
 from hiddify.request import add_period
 from logger.config import logger
 from qr_code import Link
@@ -21,6 +21,12 @@ def add_user(user_id: int) -> str:
 def get_info() -> str:
     return info_about_product
 
+@logger.catch
+def get_str_message(telegram_id):
+    db = DataBase()
+    result = db.get_user_data(telegram_id=telegram_id)
+    status = result[-1]
+    return get_start_message(status=status)
 
 @logger.catch
 def add_devices(user_id: int, user_name: str):
@@ -45,7 +51,7 @@ def add_devices(user_id: int, user_name: str):
             db.add_user_device(telegram_id=user_id, device_id=device_id)
             logger.info(f"User_id:{user_id}, Подключение устройства, device_id:{device_id}")
     else:
-        result = "Исчерпан лимит подключений"
+        result = ("Исчерпан лимит подключений", {})
         logger.info(f"User_id:{user_id}, Подключение устройства, {result}")
         return result
     logger.info(f"User_id:{user_id}, Подключение устройства, device_id:{device_id}, OK")
