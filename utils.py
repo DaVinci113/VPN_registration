@@ -36,15 +36,18 @@ def add_devices(user_id: int, user_name: str):
         logger.info(f"User_id:{user_id}, Подключение устройства, "
                     f"Коннект с БД для добавления")
         user_data = db.get_user_data(user_id)
-        user_data = [data for data in user_data][0]
+        logger.debug(f"user_data :: {user_data}")
+        logger.debug(f"user_data_list:: {user_data}")
     status = user_data[3]
     count_devices = user_data[2]
     logger.info(f"User_id:{user_id}, Подключение устройства, count_devices:{count_devices}")
     max_count_devices = connecting_devices[status]
+    logger.debug(f"status::{status}")
     logger.info(f"User_id:{user_id}, Подключение устройства, max_count_devices:{max_count_devices}")
     if count_devices < max_count_devices:
         with DataBase() as db:
             free_or_premium = add_period(user_name=user_name, telegram_id=user_id, status=status)
+            logger.debug(f"free_or_premium :: {free_or_premium}")
             logger.info(f"User_id:{user_id}, Подключение устройства, user_status:{status} add period")
             device_id = free_or_premium['uuid']
             db.add_device(user_id)

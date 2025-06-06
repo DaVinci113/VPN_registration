@@ -38,6 +38,7 @@ async def add_device(message: Message):
     logger.info(f"User:{user_id} выбрал "
                 f"Подключение устройства")
     user_name = message.from_user.full_name
+    logger.debug(f"user_id::{user_id}, user_name::{user_name}")
     add = add_devices(user_id, user_name)
     await message.reply(add[0])
     if add[1]:
