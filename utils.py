@@ -72,6 +72,7 @@ def add_devices(user_id: int, user_name: str) -> tuple[str, dict]:
 @logger.catch
 def create_and_send_link(uuid: int, user_name: str) -> str:
     """Создание и отправка qr и ссылки"""
+
     link = Link(uuid, user_name)
     link.generate_qr_code()
     return f"{send_link}\n{link.generate_link()}"
@@ -80,4 +81,5 @@ def create_and_send_link(uuid: int, user_name: str) -> str:
 @logger.catch
 def payment():
     """Платеж"""
+
     return "make payment"
