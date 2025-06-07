@@ -1,5 +1,5 @@
 from database.db import DataBase
-from setting import connecting_devices, info_about_product, get_start_message
+from setting import connecting_devices, start_message, get_info, send_qr, send_link
 from hiddify.request import add_period
 from logger.config import logger
 from qr_code import Link
@@ -7,6 +7,8 @@ from qr_code import Link
 
 @logger.catch
 def add_user(user_id: int) -> str:
+    """Добавление пользователя"""
+
     logger.info(f"User:{user_id}, Добавление в БД")
     with DataBase() as db:
         logger.info(f"User:{user_id}, Добавление"
@@ -18,18 +20,24 @@ def add_user(user_id: int) -> str:
 
 
 @logger.catch
-def get_info() -> str:
-    return info_about_product
+def get_start_message() -> str:
+    """Сообщение при старте бота"""
+
+    return start_message
 
 @logger.catch
-def get_str_message(telegram_id):
+def get_user_info(telegram_id: int) -> str:
+    """Инфо по тарифу пользователя"""
+
     db = DataBase()
     result = db.get_user_data(telegram_id=telegram_id)
     status = result[-1]
-    return get_start_message(status=status)
+    return get_info(status=status)
 
 @logger.catch
-def add_devices(user_id: int, user_name: str):
+def add_devices(user_id: int, user_name: str) -> tuple[str, dict]:
+    """Добавление устройства"""
+
     logger.info(f"User_id:{user_id}, Подключение устройства, "
                 f"User_name:{user_name}")
     with DataBase() as db:
@@ -58,15 +66,18 @@ def add_devices(user_id: int, user_name: str):
         logger.info(f"User_id:{user_id}, Подключение устройства, {result}")
         return result
     logger.info(f"User_id:{user_id}, Подключение устройства, device_id:{device_id}, OK")
-    result = ("Успешно", {"user_id": user_id, "uuid": device_id})
+    result = (send_qr, {"user_id": user_id, "uuid": device_id})
     return result
 
 @logger.catch
-def create_and_send_link(uuid, user_name):
+def create_and_send_link(uuid: int, user_name: str) -> str:
+    """Создание и отправка qr и ссылки"""
     link = Link(uuid, user_name)
     link.generate_qr_code()
+    return f"{send_link}\n{link.generate_link()}"
 
 
 @logger.catch
 def payment():
+    """Платеж"""
     return "make payment"

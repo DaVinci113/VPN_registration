@@ -5,6 +5,8 @@ from logger.config import logger
 
 @logger.catch
 def create_database():
+    """Первичная настройка БД"""
+
     logger.info("Создание БД начато (info)")
     with DataBase(db_file="users.db") as db:
         db.create_table()

@@ -5,9 +5,10 @@ from aiogram import types, F
 from aiogram.filters import Command
 from aiogram.types import Message
 from bot import dp, bot
-from utils import get_info, payment, add_devices, add_user, create_and_send_link, get_str_message
+from utils import get_start_message, payment, add_devices, add_user, create_and_send_link, get_user_info
 from logger.config import logger
 from setting import qr_code_path
+
 
 @logger.catch
 @dp.message(Command("start"))
@@ -18,17 +19,20 @@ async def cmd_start(message: Message):
     kb = [
         [types.KeyboardButton(text="ИНФО")],
         [types.KeyboardButton(text="Подключить устройство")],
-        [types.KeyboardButton(text="Оплатить")],
+        # [types.KeyboardButton(text="Оплатить")],
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb)
-    await message.answer(get_str_message(telegram_id=user_id))
+    await message.answer(get_start_message())
     await message.answer("Выберете пункт в меню", reply_markup=keyboard)
 
 
 @logger.catch
 @dp.message(F.text.lower() == "инфо")
 async def info(message: Message):
-    await  message.reply(get_info())
+    user_id = message.from_user.id
+    logger.info(f"User_id:{user_id} выбрал "
+                f"инфо")
+    await  message.reply(get_user_info(telegram_id=user_id))
 
 
 @logger.catch
@@ -43,10 +47,11 @@ async def add_device(message: Message):
     await message.reply(add[0])
     if add[1]:
         uuid = add[1]["uuid"]
-        create_and_send_link(uuid=uuid ,user_name=user_name)
+        link = create_and_send_link(uuid=uuid ,user_name=user_name)
         logger.info(f"User_id:{user_id}, QR создан")
         time.sleep(0.1)
         await bot.send_photo(message.chat.id, photo=types.FSInputFile(qr_code_path))
+        await message.reply(link)
         logger.info(f"User_id:{user_id}, QR выслан")
 
 
