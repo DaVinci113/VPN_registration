@@ -8,5 +8,4 @@ WORKDIR /app
 
 RUN uv sync --locked
 
-CMD ["uv", "run", "/database/create_database.py"]
 CMD ["uv", "run", "run.py"]

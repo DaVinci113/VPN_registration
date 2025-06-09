@@ -5,7 +5,7 @@ from aiogram import types, F
 from aiogram.filters import Command
 from aiogram.types import Message
 from bot import dp, bot
-from utils import get_start_message, payment, add_devices, add_user, create_and_send_link, get_user_info
+from utils import get_start_message, make_subscribe, add_devices, add_user, create_and_send_link, get_user_info, make_wishes
 from logger.config import logger
 from setting import qr_code_path
 
@@ -19,7 +19,8 @@ async def cmd_start(message: Message):
     kb = [
         [types.KeyboardButton(text="ИНФО")],
         [types.KeyboardButton(text="Подключить устройство")],
-        # [types.KeyboardButton(text="Оплатить")],
+        [types.KeyboardButton(text="Подписка")],
+        [types.KeyboardButton(text="Пожелания")],
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb)
     await message.answer(get_start_message())
@@ -56,12 +57,21 @@ async def add_device(message: Message):
 
 
 @logger.catch
-@dp.message(F.text.lower() == "оплатить")
-async def make_payment(message: Message):
+@dp.message(F.text.lower() == "подписка")
+async def subscribe(message: Message):
     user_id = message.from_user.id
     logger.info(f"User:{user_id} выбрал "
                 f"оплатить")
-    await  message.reply(payment())
+    await  message.reply(make_subscribe())
+
+
+@logger.catch
+@dp.message(F.text.lower() == "пожелания")
+async def wishes(message: Message):
+    user_id = message.from_user.id
+    logger.info(f"User:{user_id} выбрал "
+                f"Пожелания")
+    await  message.reply(make_wishes())
 
 
 @logger.catch

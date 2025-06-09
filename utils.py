@@ -1,5 +1,5 @@
-from database.db import DataBase
-from setting import connecting_devices, start_message, get_info, send_qr, send_link
+from work_with_database.db import DataBase
+from setting import connecting_devices, start_message, get_info, send_qr, send_link, subscribe_message, wishes_message
 from hiddify.request import add_period
 from logger.config import logger
 from qr_code import Link
@@ -79,7 +79,14 @@ def create_and_send_link(uuid: int, user_name: str) -> str:
 
 
 @logger.catch
-def payment():
-    """Платеж"""
+def make_subscribe():
+    """Оформление подписки"""
 
-    return "make payment"
+    return subscribe_message
+
+
+@logger.catch
+def make_wishes():
+    """Пожелания и отзывы"""
+
+    return wishes_message

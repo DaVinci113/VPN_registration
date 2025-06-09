@@ -6,4 +6,7 @@ services:
     ports:
       - '8000:8000'
     volumes:
-      - ./database/:/bot_data/data
+      - data:/app/work_with_database/database/
+    restart: always
+volumes:
+  data:
